@@ -159,6 +159,10 @@
 			const audio = document.getElementById('bgAudio');
 			const pdfUrl = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
 
+			document.getElementById('pdfViewer').contentWindow.onload = function () {
+				this.document.getElementsByTagName('img')[0].style.width = '100%';
+			};
+
 			function downloadPDF() {
 				const link = document.createElement('a');
 				link.href = pdfUrl;
