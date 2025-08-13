@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>PDF with Audio</title>
+	</head>
+	<body>
+		<h1>Document Viewer</h1>
+
+		<!-- Embed PDF -->
+		<iframe
+			src="../pdfs/Bryan_Vellinga_Itinerary.pdf"
+			width="100%"
+			height="600px"
+		></iframe>
+
+		<!-- Download link as a button -->
+		<button onclick="downloadPDF()">Download PDF</button>
+
+		<!-- Auto-play MP3 -->
+		<audio autoplay>
+			<source src="../Fairway To Hell.mp3" type="audio/mpeg" />
+			Your browser does not support the audio element.
+		</audio>
+
+		<script>
+			function downloadPDF() {
+				const link = document.createElement('a');
+				link.href = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
+				link.download = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+			}
+		</script>
+	</body>
+</html>
