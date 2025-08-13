@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Bryan Vellinga Itinerary</title>
+		<title>John Staley Itinerary</title>
 		<link rel="icon" href="../favicon.ico" type="image/x-icon" />
 		<style>
 			html,
@@ -144,13 +144,13 @@
 		<div id="cover">
 			<img src="../bird.png" alt="Logo" />
 			<h1>2025 Fairway to Hell Bandon Dunes Tournament</h1>
-			<h2>Bryan Vellinga</h2>
+			<h2>John Staley</h2>
 			<button id="viewButton">View Itinerary</button>
 		</div>
 
 		<iframe
 			id="pdfViewer"
-			src="../pdfs/Bryan_Vellinga_Itinerary.pdf#toolbar=0&navpanes=0&scrollbar=0"
+			src="../pdfs/John_Staley_Itinerary.pdf#toolbar=0&navpanes=0&scrollbar=0"
 		></iframe>
 
 		<button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
@@ -166,12 +166,12 @@
 			const downloadButton = document.getElementById('downloadButton');
 			const muteButton = document.getElementById('muteButton');
 			const audio = document.getElementById('bgAudio');
-			const pdfUrl = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
+			const pdfUrl = '../pdfs/John_Staley_Itinerary.pdf';
 
 			function downloadPDF() {
 				const link = document.createElement('a');
 				link.href = pdfUrl;
-				link.download = 'Bryan_Vellinga_Itinerary.pdf';
+				link.download = 'John_Staley_Itinerary.pdf';
 				document.body.appendChild(link);
 				link.click();
 				document.body.removeChild(link);
