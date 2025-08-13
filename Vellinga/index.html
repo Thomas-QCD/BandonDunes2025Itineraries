@@ -13,6 +13,9 @@
 				width: 100%;
 				overflow: hidden;
 				font-family: sans-serif;
+				max-height: 100vh;
+				max-width: 100vw;
+				overflow: hidden;
 			}
 
 			/* Cover page default (desktop) */
@@ -22,6 +25,9 @@
 				left: 0;
 				width: 100%;
 				height: 100vh;
+				max-height: 100vh;
+				max-width: 100vw;
+				overflow: hidden;
 				background: #222 url('../pdfs/cover-image.jpg') center/cover no-repeat;
 				display: flex;
 				justify-content: center;
@@ -32,6 +38,13 @@
 				text-align: center;
 				padding: 2vw;
 				box-sizing: border-box;
+			}
+
+			#cover img {
+				max-width: 200px; /* desktop default */
+				width: 15vw; /* scales with viewport width */
+				height: auto; /* maintain aspect ratio */
+				margin-bottom: 1em; /* spacing below the logo */
 			}
 
 			#cover h1 {
@@ -49,27 +62,13 @@
 				font-size: 20px;
 			}
 
-			/* Mobile responsiveness */
-			@media (max-width: 768px) {
-				#cover h1 {
-					font-size: 8vw;
-				}
-				#cover h2 {
-					font-size: 5vw;
-				}
-				#viewButton {
-					padding: 4vw 8vw;
-					font-size: 4vw;
-				}
-			}
-
 			#viewButton {
 				padding: 14px 28px;
 				font-size: 20px;
 				border: none;
 				border-radius: 8px;
 				cursor: pointer;
-				background-color: #007bff;
+				background-color: #d74a27;
 				color: white;
 				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 				transition: background-color 0.3s;
@@ -78,15 +77,6 @@
 			#viewButton:hover {
 				background-color: #0056b3;
 			}
-
-			/* PDF iframe */
-			#pdfViewer {
-				display: none;
-				width: 100vw;
-				height: 100vh;
-				border: none;
-			}
-
 			/* Download button */
 			#downloadButton {
 				position: fixed;
@@ -102,6 +92,32 @@
 				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 				z-index: 1000;
 				display: none;
+			}
+			/* Mobile responsiveness */
+			@media (max-width: 1200px) {
+				#cover h1 {
+					font-size: 8vw;
+				}
+				#cover h2 {
+					font-size: 5vw;
+				}
+				#viewButton,
+				#downloadButton {
+					padding: 4vw 8vw;
+					font-size: 4vw;
+				}
+				#cover img {
+					max-width: 280px; /* limit max size on small screens */
+					width: 30vw; /* scale with smaller screen */
+				}
+			}
+
+			/* PDF iframe */
+			#pdfViewer {
+				display: none;
+				width: 100vw;
+				height: 100vh;
+				border: none;
 			}
 
 			/* Mobile responsiveness */
@@ -119,6 +135,7 @@
 	</head>
 	<body>
 		<div id="cover">
+			<img src="../bird.png" alt="Logo" />
 			<h1>2025 Fairway to Hell Bandon Dunes Tournament</h1>
 			<h2>Bryan Vellinga</h2>
 			<button id="viewButton">View Itinerary</button>
