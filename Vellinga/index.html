@@ -10,16 +10,17 @@
 				margin: 0;
 				padding: 0;
 				height: 100%;
+				width: 100%;
 				overflow: hidden;
 				font-family: sans-serif;
 			}
 
-			/* Cover page */
+			/* Cover page default (desktop) */
 			#cover {
 				position: fixed;
 				top: 0;
 				left: 0;
-				width: 100vw;
+				width: 100%;
 				height: 100vh;
 				background: #222 url('../pdfs/cover-image.jpg') center/cover no-repeat;
 				display: flex;
@@ -29,11 +30,42 @@
 				flex-direction: column;
 				color: white;
 				text-align: center;
+				padding: 2vw;
+				box-sizing: border-box;
+			}
+
+			#cover h1 {
+				font-size: 48px; /* desktop default */
+				margin: 0.5em 0;
+			}
+
+			#cover h2 {
+				font-size: 32px;
+				margin: 0.25em 0 1em 0;
 			}
 
 			#viewButton {
 				padding: 16px 32px;
-				font-size: 24px;
+				font-size: 20px;
+			}
+
+			/* Mobile responsiveness */
+			@media (max-width: 768px) {
+				#cover h1 {
+					font-size: 8vw;
+				}
+				#cover h2 {
+					font-size: 5vw;
+				}
+				#viewButton {
+					padding: 4vw 8vw;
+					font-size: 4vw;
+				}
+			}
+
+			#viewButton {
+				padding: 14px 28px;
+				font-size: 20px;
 				border: none;
 				border-radius: 8px;
 				cursor: pointer;
@@ -47,11 +79,12 @@
 				background-color: #0056b3;
 			}
 
-			/* PDF canvas */
-			#pdf-canvas {
+			/* PDF iframe */
+			#pdfViewer {
 				display: none;
 				width: 100vw;
 				height: 100vh;
+				border: none;
 			}
 
 			/* Download button */
@@ -68,6 +101,19 @@
 				cursor: pointer;
 				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 				z-index: 1000;
+				display: none;
+			}
+
+			/* Mobile responsiveness */
+			@media (max-width: 768px) {
+				#viewButton {
+					padding: 12px 24px;
+					font-size: 18px;
+				}
+				#downloadButton {
+					padding: 10px 20px;
+					font-size: 14px;
+				}
 			}
 		</style>
 	</head>
@@ -78,37 +124,23 @@
 			<button id="viewButton">View Itinerary</button>
 		</div>
 
-		<canvas id="pdf-canvas"></canvas>
+		<iframe
+			id="pdfViewer"
+			src="../pdfs/Bryan_Vellinga_Itinerary.pdf#toolbar=0&navpanes=0&scrollbar=0"
+		></iframe>
+
 		<button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
 
 		<audio id="bgAudio" loop>
 			<source src="../Fairway To Hell.mp3" type="audio/mpeg" />
 		</audio>
 
-		<script src="https://www.jsdelivr.com/package/npm/pdfjs-dist"></script>
-		<script type="module">
-			import pdfjsDist from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.54/+esm';
-			const pdfUrl = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
-			const canvas = document.getElementById('pdf-canvas');
-			const ctx = canvas.getContext('2d');
+		<script>
+			const cover = document.getElementById('cover');
+			const pdfViewer = document.getElementById('pdfViewer');
+			const downloadButton = document.getElementById('downloadButton');
 			const audio = document.getElementById('bgAudio');
-
-			// Render the first page of the PDF
-			function renderPDF() {
-				pdfjsDist.getDocument(pdfUrl).promise.then((pdf) => {
-					pdf.getPage(1).then((page) => {
-						const viewport = page.getViewport({ scale: 1 });
-						canvas.width = window.innerWidth;
-						canvas.height = window.innerHeight;
-						const scale = Math.min(
-							canvas.width / viewport.width,
-							canvas.height / viewport.height
-						);
-						const scaledViewport = page.getViewport({ scale: scale });
-						page.render({ canvasContext: ctx, viewport: scaledViewport });
-					});
-				});
-			}
+			const pdfUrl = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
 
 			function downloadPDF() {
 				const link = document.createElement('a');
@@ -119,15 +151,19 @@
 				document.body.removeChild(link);
 			}
 
-			// Show PDF and play audio when user clicks "View Itinerary"
 			document.getElementById('viewButton').addEventListener('click', () => {
-				document.getElementById('cover').style.display = 'none';
-				canvas.style.display = 'block';
-				renderPDF();
+				cover.style.display = 'none';
+				pdfViewer.style.display = 'block';
+				downloadButton.style.display = 'block';
 
-				// Unmute and play audio
 				audio.muted = false;
 				audio.play().catch((err) => console.warn('Audio play failed:', err));
+			});
+
+			// Resize iframe on orientation change / resize
+			window.addEventListener('resize', () => {
+				pdfViewer.style.width = window.innerWidth + 'px';
+				pdfViewer.style.height = window.innerHeight + 'px';
 			});
 		</script>
 	</body>
