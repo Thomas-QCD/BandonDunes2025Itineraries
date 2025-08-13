@@ -11,12 +11,50 @@
 				padding: 0;
 				height: 100%;
 				overflow: hidden;
+				font-family: sans-serif;
 			}
-			iframe {
+
+			/* Cover page */
+			#cover {
+				position: fixed;
+				top: 0;
+				left: 0;
 				width: 100vw;
 				height: 100vh;
-				border: none;
+				background: #222 url('../pdfs/cover-image.jpg') center/cover no-repeat;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 2000;
+				flex-direction: column;
+				color: white;
+				text-align: center;
 			}
+
+			#viewButton {
+				padding: 16px 32px;
+				font-size: 24px;
+				border: none;
+				border-radius: 8px;
+				cursor: pointer;
+				background-color: #007bff;
+				color: white;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+				transition: background-color 0.3s;
+			}
+
+			#viewButton:hover {
+				background-color: #0056b3;
+			}
+
+			/* PDF canvas */
+			#pdf-canvas {
+				display: none;
+				width: 100vw;
+				height: 100vh;
+			}
+
+			/* Download button */
 			#downloadButton {
 				position: fixed;
 				bottom: 20px;
@@ -29,58 +67,67 @@
 				border-radius: 6px;
 				cursor: pointer;
 				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-				transition: background-color 0.3s;
 				z-index: 1000;
-			}
-			#downloadButton:hover {
-				background-color: #0056b3;
 			}
 		</style>
 	</head>
 	<body>
-		<iframe src="../pdfs/Bryan_Vellinga_Itinerary.pdf"></iframe>
+		<div id="cover">
+			<h1>2025 Fairway to Hell Bandon Dunes Tournament</h1>
+			<h2>Bryan Vellinga</h2>
+			<button id="viewButton">View Itinerary</button>
+		</div>
 
+		<canvas id="pdf-canvas"></canvas>
 		<button id="downloadButton" onclick="downloadPDF()">Download PDF</button>
 
 		<audio id="bgAudio" loop>
 			<source src="../Fairway To Hell.mp3" type="audio/mpeg" />
-			Your browser does not support the audio element.
 		</audio>
 
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.338/pdf.min.js"></script>
 		<script>
+			const pdfUrl = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
+			const canvas = document.getElementById('pdf-canvas');
+			const ctx = canvas.getContext('2d');
+			const audio = document.getElementById('bgAudio');
+
+			// Render the first page of the PDF
+			function renderPDF() {
+				pdfjsLib.getDocument(pdfUrl).promise.then((pdf) => {
+					pdf.getPage(1).then((page) => {
+						const viewport = page.getViewport({ scale: 1 });
+						canvas.width = window.innerWidth;
+						canvas.height = window.innerHeight;
+						const scale = Math.min(
+							canvas.width / viewport.width,
+							canvas.height / viewport.height
+						);
+						const scaledViewport = page.getViewport({ scale: scale });
+						page.render({ canvasContext: ctx, viewport: scaledViewport });
+					});
+				});
+			}
+
 			function downloadPDF() {
 				const link = document.createElement('a');
-				link.href = '../pdfs/Bryan_Vellinga_Itinerary.pdf';
+				link.href = pdfUrl;
 				link.download = 'Bryan_Vellinga_Itinerary.pdf';
 				document.body.appendChild(link);
 				link.click();
 				document.body.removeChild(link);
 			}
 
-			// Attempt autoplay (muted first, then unmute after play)
-			const audio = document.getElementById('bgAudio');
-			audio.muted = true;
+			// Show PDF and play audio when user clicks "View Itinerary"
+			document.getElementById('viewButton').addEventListener('click', () => {
+				document.getElementById('cover').style.display = 'none';
+				canvas.style.display = 'block';
+				renderPDF();
 
-			// Attempt to play muted audio immediately (some browsers allow this)
-			audio.play().catch(() => {});
-
-			// Function to unmute on first user interaction
-			function unmuteAudio() {
+				// Unmute and play audio
 				audio.muted = false;
-				audio.play().catch((err) => {
-					console.warn('Audio still blocked:', err);
-				});
-
-				// Remove the event listeners after first interaction
-				document.removeEventListener('click', unmuteAudio);
-				document.removeEventListener('keydown', unmuteAudio);
-				document.removeEventListener('touchstart', unmuteAudio);
-			}
-
-			// Listen for any user interaction
-			document.addEventListener('click', unmuteAudio);
-			document.addEventListener('keydown', unmuteAudio);
-			document.addEventListener('touchstart', unmuteAudio);
+				audio.play().catch((err) => console.warn('Audio play failed:', err));
+			});
 		</script>
 	</body>
 </html>
